@@ -7,14 +7,18 @@ import (
 )
 
 type Env struct {
-	AppEnv        string `mapstructure:"AppEnv"`
-	ServerAddress string `mapstructure:"ServerAddress"`
-	DbHost        string `mapstructure:"DbHost"`
-	DbPort        string `mapstructure:"DbPort"`
-	DbUser        string `mapstructure:"DbUser"`
-	DbPass        string `mapstructure:"DbPass"`
-	DbName        string `mapstructure:"DbName"`
-	SecretKey     string `mapstructure:"SecretKey"`
+	AppEnv                 string `mapstructure:"APP_ENV"`
+	ServerAddress          string `mapstructure:"SERVER_ADDRESS"`
+	DbHost                 string `mapstructure:"DB_HOST"`
+	DbPort                 string `mapstructure:"DB_PORT"`
+	DbUser                 string `mapstructure:"DB_USER"`
+	DbPass                 string `mapstructure:"DB_PASS"`
+	DbName                 string `mapstructure:"DB_NAME"`
+	SecretKey              string `mapstructure:"SecretKey"`
+	AccessTokenExpiryHour  int    `mapstructure:"ACCESS_TOKEN_EXPIRY_HOUR"`
+	RefreshTokenExpiryHour int    `mapstructure:"REFRESH_TOKEN_EXPIRY_HOUR"`
+	AccessTokenSecret      string `mapstructure:"ACCESS_TOKEN_SECRET"`
+	RefreshTokenSecret     string `mapstructure:"REFRESH_TOKEN_SECRET"`
 }
 
 func NewEnv() *Env {

@@ -8,11 +8,13 @@ services:
     image: app
     container_name: app
     restart: unless-stopped
+    volumes:
+      - ./app:/app
     env_file: .env
     ports:
       - "8080:8080"
     depends_on:
-      - mongodb
+      - postgres
 
   postgres:
     container_name: postgres_db
@@ -20,14 +22,17 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: go-backend-clean-architecture-db
       PGDATA: /data/postgres
     volumes:
-      - postgres:/data/postgres
+      - postgres:/data/postgres:persistent
     ports:
       - "5432:5432"
-    networks:
-      - postgres
     restart: unless-stopped
 
 volumes:
-  dbdata:
+  postgres:
+
+networks:
+  default:
+    name: app-network

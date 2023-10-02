@@ -2,8 +2,8 @@ package bootstrap
 
 import (
 	"database/sql"
-	"echo-go/models"
 	"fmt"
+	"gin-clean-arch/models"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -50,7 +50,7 @@ func GenerateDatabase(db *gorm.DB) {
 		return
 	}
 
-	if err := db.AutoMigrate(&models.Person{}); err != nil {
+	if err := db.AutoMigrate(&models.Employee{}); err != nil {
 		fmt.Printf("error in migration process")
 	}
 }
