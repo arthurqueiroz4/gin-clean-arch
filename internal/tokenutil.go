@@ -3,17 +3,15 @@ package internal
 import (
 	"fmt"
 	"gin-clean-arch/domain"
-	"gin-clean-arch/models"
 	"github.com/golang-jwt/jwt/v4"
-	"strconv"
 	"time"
 )
 
-func CreateAccessToken(employee *models.Employee, secret string, expiry int) (accessToken string, err error) {
+func CreateAccessToken(user *domain.User, secret string, expiry int) (accessToken string, err error) {
 	exp := time.Now().Add(time.Hour * time.Duration(expiry)).Unix()
 	claims := &domain.JwtCustomClaims{
-		Name: employee.Name,
-		ID:   strconv.Itoa(int(employee.Model.ID)),
+		Name: user.Name,
+		ID:   user.ID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: exp,
 		},
@@ -26,9 +24,9 @@ func CreateAccessToken(employee *models.Employee, secret string, expiry int) (ac
 	return accessToken, err
 }
 
-func CreateRefreshToken(employee *models.Employee, secret string, expiry int) (refreshToken string, err error) {
+func CreateRefreshToken(user *domain.User, secret string, expiry int) (refreshToken string, err error) {
 	claimsRefresh := &domain.JwtCustomRefreshClaims{
-		ID: strconv.Itoa(int(employee.Model.ID)),
+		ID: user.ID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * time.Duration(expiry)).Unix(),
 		},
