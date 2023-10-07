@@ -53,4 +53,16 @@ func GenerateDatabase(db *gorm.DB) {
 	if err := db.AutoMigrate(&domain.User{}); err != nil {
 		fmt.Printf("error in migration process")
 	}
+
+	userAdmin := domain.User{
+		Name: "admin", Email: "admin@admin.com", Pass: "123a",
+	}
+	var userFound domain.User
+	
+	if db.Where("email = ?", userAdmin.Email).First(&userFound); userFound.Email == ""{
+		err = db.Create(userAdmin).Error
+		if err != nil {
+			fmt.Println("error in create admin")
+		}
+	}
 }

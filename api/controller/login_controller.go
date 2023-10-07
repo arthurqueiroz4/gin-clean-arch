@@ -4,9 +4,10 @@ import (
 	"gin-clean-arch/bootstrap"
 	"gin-clean-arch/domain"
 	"gin-clean-arch/internal"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	_ "golang.org/x/crypto/bcrypt"
 )
 
 type LoginController struct {
@@ -27,8 +28,8 @@ func (lc *LoginController) Login(c *gin.Context) {
 		c.JSON(http.StatusNotFound, domain.ErrorResponse{Message: "User not found with the given email"})
 		return
 	}
-
-	if bcrypt.CompareHashAndPassword([]byte(user.Pass), []byte(request.Password)) != nil {
+	// if bcrypt.CompareHashAndPassword([]byte(user.Pass), []byte(request.Password)) != nil {
+	if user.Pass != request.Password {
 		c.JSON(http.StatusUnauthorized, domain.ErrorResponse{Message: "Invalid credentials"})
 		return
 	}

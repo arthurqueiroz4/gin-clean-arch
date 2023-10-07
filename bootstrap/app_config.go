@@ -11,6 +11,7 @@ func App() Application {
 	app := new(Application)
 	app.Env = NewEnv()
 	app.Database = NewPostgresDatabase(app.Env)
+	GenerateDatabase(app.Database)
 
 	return *app
 }

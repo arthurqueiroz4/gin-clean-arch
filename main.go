@@ -1,13 +1,20 @@
 package main
 
 import (
-	"fmt"
+	"gin-clean-arch/api/route"
 	"gin-clean-arch/bootstrap"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	app := bootstrap.App()
-	bootstrap.NewPostgresDatabase(app.Env)
-	bootstrap.GenerateDatabase(app.Database)
-	fmt.Println(app.Database)
+
+	env := app.Env
+
+	gin := gin.Default()
+
+	route.Setup(env, app.Database, gin)
+
+	gin.Run(env.ServerAddress)
 }
