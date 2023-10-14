@@ -1,9 +1,7 @@
 package controller
 
 import (
-	"gin-clean-arch/bootstrap"
 	"gin-clean-arch/domain"
-	"gin-clean-arch/internal"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,8 +9,8 @@ import (
 )
 
 type LoginController struct {
-	UserRepository domain.UserRepository
-	Env            *bootstrap.Env
+	LoginUsecase domain.LoginUsecase
+	UserUsecase  domain.UserUsecase
 }
 
 func (lc *LoginController) Login(c *gin.Context) {
@@ -23,7 +21,7 @@ func (lc *LoginController) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := lc.UserRepository.FindByEmail(request.Email)
+	user, err := lc.UserUsecase.FindByEmail(request.Email)
 	if err != nil {
 		c.JSON(http.StatusNotFound, domain.ErrorResponse{Message: "User not found with the given email"})
 		return
@@ -34,13 +32,13 @@ func (lc *LoginController) Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := internal.CreateAccessToken(user, lc.Env.SecretKey, lc.Env.AccessTokenExpiryHour)
+	accessToken, err := lc.LoginUsecase.CreateAccessToken(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	refreshToken, err := internal.CreateRefreshToken(user, lc.Env.RefreshTokenSecret, lc.Env.RefreshTokenExpiryHour)
+	refreshToken, err := lc.LoginUsecase.CreateRefreshToken(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return

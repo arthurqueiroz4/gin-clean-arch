@@ -1,34 +1,31 @@
 package usecase
 
-//
-//import (
-//	"context"
-//	"gin-clean-arch/domain"
-//	"time"
-//)
-//
-//type loginUsecase struct {
-//	userRepository domain.UserRepository
-//	contextTimeout time.Duration
-//}
-//
-//func NewLoginUsecase(userRepository domain.UserRepository, timeout time.Duration) domain.LoginUsecase {
-//	return &loginUsecase{
-//		userRepository: userRepository,
-//		contextTimeout: timeout,
-//	}
-//}
-//
-//func (lu *loginUsecase) GetUserByEmail(c context.Context, email string) (domain.User, error) {
-//	ctx, cancel := context.WithTimeout(c, lu.contextTimeout)
-//	defer cancel()
-//	return lu.userRepository.FindByEmail(ctx, email)
-//}
-//
-//func (lu *loginUsecase) CreateAccessToken(user *domain.User, secret string, expiry int) (accessToken string, err error) {
-//	return tokenutil.CreateAccessToken(user, secret, expiry)
-//}
-//
-//func (lu *loginUsecase) CreateRefreshToken(user *domain.User, secret string, expiry int) (refreshToken string, err error) {
-//	return tokenutil.CreateRefreshToken(user, secret, expiry)
-//}
+import (
+	"gin-clean-arch/bootstrap"
+	"gin-clean-arch/domain"
+	tokenutil "gin-clean-arch/internal"
+)
+
+type LoginUsecase struct {
+	userRepository domain.UserRepository
+	env            *bootstrap.Env
+}
+
+func NewLoginUsecase(userRepository domain.UserRepository, env *bootstrap.Env) domain.LoginUsecase {
+	return &LoginUsecase{
+		userRepository: userRepository,
+		env:            env,
+	}
+}
+
+func (lu *LoginUsecase) GetUserByEmail(email string) (*domain.User, error) {
+	return lu.userRepository.FindByEmail(email)
+}
+
+func (lu *LoginUsecase) CreateAccessToken(user *domain.User) (string, error) {
+	return tokenutil.CreateAccessToken(user, lu.env.SecretKey, lu.env.AccessTokenExpiryHour)
+}
+
+func (lu *LoginUsecase) CreateRefreshToken(user *domain.User) (string, error) {
+	return tokenutil.CreateRefreshToken(user, lu.env.SecretKey, lu.env.AccessTokenExpiryHour)
+}

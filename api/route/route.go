@@ -8,12 +8,15 @@ import (
 )
 
 func Setup(env *bootstrap.Env, db *gorm.DB, gin *gin.Engine) {
-	publicRouter := gin.Group("")
 	//All public APIs
+	publicRouter := gin.Group("")
 	NewLoginRouter(env, db, publicRouter)
+
+	// All private APIs
 	protectedRouter := gin.Group("")
+	CreateUser(db, protectedRouter)
+
 	//Middleware to verify AccessToken
 	protectedRouter.Use(middleware.JwtAuth(env.SecretKey))
-	// All private APIs
 
 }

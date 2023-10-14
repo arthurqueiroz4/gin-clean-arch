@@ -58,11 +58,11 @@ func GenerateDatabase(db *gorm.DB) {
 		Name: "admin", Email: "admin@admin.com", Pass: "123a",
 	}
 	var userFound domain.User
-	
-	if db.Where("email = ?", userAdmin.Email).First(&userFound); userFound.Email == ""{
-		err = db.Create(userAdmin).Error
+
+	if db.Where("email = ?", userAdmin.Email).First(&userFound); userFound.Email == "" {
+		err = db.Create(&userAdmin).Error
 		if err != nil {
-			fmt.Println("error in create admin")
+			panic(err)
 		}
 	}
 }

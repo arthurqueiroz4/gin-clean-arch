@@ -17,9 +17,9 @@ func NewUserRepository(db *gorm.DB) domain.UserRepository {
 }
 
 func (ur *userRepository) Create(user *domain.User) (*domain.User, error) {
-	email, _ := ur.FindByEmail(user.Email)
+	userFound, _ := ur.FindByEmail(user.Email)
 
-	if email != nil {
+	if userFound.Email != "" {
 		return nil, fmt.Errorf("email already registered")
 	}
 
