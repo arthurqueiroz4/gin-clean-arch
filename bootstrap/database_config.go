@@ -55,7 +55,7 @@ func GenerateDatabase(db *gorm.DB) {
 	}
 
 	userAdmin := domain.User{
-		Name: "admin", Email: "admin@admin.com", Pass: "123a",
+		Name: "admin", Email: "admin@admin.com", Pass: "123a", Role: "ADMIN",
 	}
 	var userFound domain.User
 

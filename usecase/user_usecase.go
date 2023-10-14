@@ -38,3 +38,14 @@ func (uc *UserUsecase) FindByEmail(email string) (*domain.User, error) {
 	}
 	return userFound, nil
 }
+
+func (uc *UserUsecase) FindById(id uint) (*domain.User, error) {
+	userFound, err := uc.userRepository.FindById(id)
+	if err != nil {
+		return nil, err
+	}
+	if userFound.Name == "" {
+		return nil, fmt.Errorf("user with id equal %v not found", err.Error())
+	}
+	return userFound, nil
+}

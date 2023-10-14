@@ -32,7 +32,7 @@ func (ur *userRepository) Create(user *domain.User) (*domain.User, error) {
 	return user, nil
 }
 
-func (ur *userRepository) FindById(id int) (*domain.User, error) {
+func (ur *userRepository) FindById(id uint) (*domain.User, error) {
 	var person = domain.User{}
 
 	err := ur.database.Where("id = ?", id).First(&person).Error

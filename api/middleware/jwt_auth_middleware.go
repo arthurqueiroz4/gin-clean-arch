@@ -3,12 +3,20 @@ package middleware
 import (
 	"gin-clean-arch/domain"
 	"gin-clean-arch/internal"
+	"gin-clean-arch/repository"
+	"gin-clean-arch/usecase"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
-func JwtAuth(secret string) gin.HandlerFunc {
+func JwtAuth(secret string, db *gorm.DB) gin.HandlerFunc {
+
+	userRepository := repository.NewUserRepository(db)
+	userUsecase := usecase.NewUserUsecase(userRepository)
+
 	return func(context *gin.Context) {
 		authHeader := context.Request.Header.Get("Authorization")
 		token := strings.Split(authHeader, " ")
@@ -16,13 +24,19 @@ func JwtAuth(secret string) gin.HandlerFunc {
 			authToken := token[1]
 			authorized, err := internal.IsAuthorized(authToken, secret)
 			if authorized {
-				userId, err := internal.ExtractIDFromToken(authToken, secret)
+				userIdString, err := internal.ExtractIDFromToken(authToken, secret)
 				if err != nil {
 					context.JSON(http.StatusUnauthorized, domain.ErrorResponse{err.Error()})
 					context.Abort()
 					return
 				}
-				context.Set("x-user-id", userId)
+
+				userContext, err := getUserById(userIdString, userUsecase)
+				if err != nil {
+					context.JSON(http.StatusUnauthorized, domain.ErrorResponse{err.Error()})
+					context.Abort()
+				}
+				context.Set("userContext", userContext)
 				context.Next()
 				return
 			}
@@ -32,4 +46,16 @@ func JwtAuth(secret string) gin.HandlerFunc {
 		context.JSON(http.StatusUnauthorized, domain.ErrorResponse{"Not authorized"})
 		context.Abort()
 	}
+}
+
+func getUserById(id string, userUsecase domain.UserUsecase) (*domain.User, error) {
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+	userFound, err := userUsecase.FindById(uint(idInt))
+	if err != nil {
+		return nil, err
+	}
+	return userFound, nil
 }

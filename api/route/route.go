@@ -14,9 +14,9 @@ func Setup(env *bootstrap.Env, db *gorm.DB, gin *gin.Engine) {
 
 	// All private APIs
 	protectedRouter := gin.Group("")
-	CreateUser(db, protectedRouter)
-
 	//Middleware to verify AccessToken
-	protectedRouter.Use(middleware.JwtAuth(env.SecretKey))
+	protectedRouter.Use(middleware.JwtAuth(env.SecretKey, db))
+	protectedRouter.Use(middleware.AdminAuth())
+	CreateUser(db, protectedRouter)
 
 }

@@ -13,7 +13,6 @@ func main() {
 	env := app.Env
 
 	gin := gin.Default()
-
 	route.Setup(env, app.Database, gin)
 
 	gin.Run(env.ServerAddress)
