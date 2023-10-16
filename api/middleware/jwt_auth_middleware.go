@@ -35,6 +35,7 @@ func JwtAuth(secret string, db *gorm.DB) gin.HandlerFunc {
 				if err != nil {
 					context.JSON(http.StatusUnauthorized, domain.ErrorResponse{err.Error()})
 					context.Abort()
+					return
 				}
 				context.Set("userContext", userContext)
 				context.Next()
@@ -42,9 +43,11 @@ func JwtAuth(secret string, db *gorm.DB) gin.HandlerFunc {
 			}
 			context.JSON(http.StatusUnauthorized, domain.ErrorResponse{err.Error()})
 			context.Abort()
+			return
 		}
 		context.JSON(http.StatusUnauthorized, domain.ErrorResponse{"Not authorized"})
 		context.Abort()
+		return
 	}
 }
 

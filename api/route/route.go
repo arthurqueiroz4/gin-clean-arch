@@ -18,5 +18,7 @@ func Setup(env *bootstrap.Env, db *gorm.DB, gin *gin.Engine) {
 	protectedRouter.Use(middleware.JwtAuth(env.SecretKey, db))
 	protectedRouter.Use(middleware.AdminAuth())
 	CreateUser(db, protectedRouter)
+	DeleteUser(db, protectedRouter)
+	FindAllUsers(db, protectedRouter)
 
 }

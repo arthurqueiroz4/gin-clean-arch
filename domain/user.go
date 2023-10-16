@@ -19,15 +19,14 @@ type UserRepository interface {
 	Create(user *User) (*User, error)
 	FindById(id uint) (*User, error)
 	FindByEmail(email string) (*User, error)
-	FindAll(page, pageSize int) (*[]User, error)
-	Delete(id int) error
+	FindAll(page, pageSize int) (*[]User, int64, error)
+	Delete(id uint) error
 }
 
 type UserUsecase interface {
 	Create(user User) (*User, error)
 	FindByEmail(email string) (*User, error)
 	FindById(id uint) (*User, error)
-	// FindByEmail(email string, userRepository UserRepository) (*User, error)
-	// FindAll(page, pageSize int, userRepository UserRepository) (*[]User, error)
-	// Delete(id int, userRepository UserRepository) error
+	FindAll(page, pageSize string) (*[]User, int64, error)
+	Delete(id int) error
 }

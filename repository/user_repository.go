@@ -56,27 +56,28 @@ func (ur *userRepository) FindByEmail(email string) (*domain.User, error) {
 	return &person, nil
 }
 
-func (ur *userRepository) FindAll(page, pageSize int) (*[]domain.User, error) {
+func (ur *userRepository) FindAll(page, pageSize int) (*[]domain.User, int64, error) {
 	var persons []domain.User
 
 	offset := (page - 1) * pageSize
 
-	db := ur.database.Select("id", "nome", "email", "pass").Limit(pageSize).Offset(offset)
-
+	db := ur.database.Select("id", "name", "email", "pass", "role").Limit(pageSize).Offset(offset)
+	var total int64
+	ur.database.Table("users").Count(&total)
 	err := db.Find(&persons).Error
 
 	if err != nil {
-		return nil, fmt.Errorf("failed view all rooms %v", err.Error())
+		return nil, 0, fmt.Errorf("failed view all rooms %v", err.Error())
 	}
 
-	return &persons, nil
+	return &persons, total, nil
 }
 
-func (ur *userRepository) Delete(id int) error {
-	err := ur.database.Delete(id).Error
+func (ur *userRepository) Delete(id uint) error {
+	err := ur.database.Table("users").Where("id = ?", id).Delete(&domain.User{}).Error
 
 	if err != nil {
-		return fmt.Errorf("failed delete id:%d", id)
+		return err
 	}
 
 	return nil
