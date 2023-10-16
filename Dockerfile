@@ -1,11 +1,19 @@
-FROM golang:1.21-alpine
+# Use a imagem oficial do Golang como imagem base
+FROM golang:1.21 AS builder
 
-RUN mkdir /app
-
-ADD . /app
-
+# Defina o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-RUN go build -o main cmd/main.go
+# Copie o arquivo go.mod e go.sum para baixar as dependências
+COPY go.mod go.sum ./app
 
-CMD ["/app/main"]
+# Execute o comando go mod download para baixar as dependências
+RUN go mod download
+
+# Copie todo o código-fonte da aplicação, incluindo a pasta cmd, para o contêiner
+COPY . ./app
+
+# Compile a aplicação (assumindo que o arquivo main.go esteja em cmd/)
+RUN go build -o ./cmd
+
+CMD ["/app/myapp"]

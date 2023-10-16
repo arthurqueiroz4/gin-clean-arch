@@ -10,14 +10,14 @@ func AdminAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		value, exists := c.Get("userContext")
 		if !exists {
-			c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: "Contact admin"})
+			c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: "Internal error"})
 			c.Abort()
 			return
 		}
 		user, ok := value.(*domain.User)
 
 		if !ok {
-			c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: "user context is not a User"})
+			c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: "Internal error"})
 			c.Abort()
 			return
 		}

@@ -7,7 +7,13 @@ import (
 
 func (uc *UserController) FindAllUsers(c *gin.Context) {
 	page := c.Query("page")
+	if page == "" {
+		page = "0"
+	}
 	size := c.Query("size")
+	if size == "" {
+		size = "0"
+	}
 	allUsers, total, err := uc.UserUsecase.FindAll(page, size)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

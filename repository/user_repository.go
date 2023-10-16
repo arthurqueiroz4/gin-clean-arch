@@ -59,7 +59,7 @@ func (ur *userRepository) FindByEmail(email string) (*domain.User, error) {
 func (ur *userRepository) FindAll(page, pageSize int) (*[]domain.User, int64, error) {
 	var persons []domain.User
 
-	offset := (page - 1) * pageSize
+	offset := page * pageSize
 
 	db := ur.database.Select("id", "name", "email", "pass", "role").Limit(pageSize).Offset(offset)
 	var total int64

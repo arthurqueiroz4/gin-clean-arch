@@ -20,5 +20,6 @@ func Setup(env *bootstrap.Env, db *gorm.DB, gin *gin.Engine) {
 	CreateUser(db, protectedRouter)
 	DeleteUser(db, protectedRouter)
 	FindAllUsers(db, protectedRouter)
+	FindUserById(db, protectedRouter)
 
 }

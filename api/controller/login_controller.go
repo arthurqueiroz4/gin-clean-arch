@@ -44,9 +44,6 @@ func (lc *LoginController) Login(c *gin.Context) {
 		return
 	}
 
-	c.Set("userRole", user.Role)
-	c.Set("userId", user.ID)
-
 	c.JSON(http.StatusOK, domain.LoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
