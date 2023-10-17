@@ -1,19 +1,26 @@
-# Use a imagem oficial do Golang como imagem base
+ # Etapa de build
 FROM golang:1.21 AS builder
 
-# Defina o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copie o arquivo go.mod e go.sum para baixar as dependências
-COPY go.mod go.sum ./app
-
-# Execute o comando go mod download para baixar as dependências
+COPY go.mod go.sum ./
 RUN go mod download
+# RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
-# Copie todo o código-fonte da aplicação, incluindo a pasta cmd, para o contêiner
-COPY . ./app
+ADD . /app
 
-# Compile a aplicação (assumindo que o arquivo main.go esteja em cmd/)
-RUN go build -o ./cmd
+FROM golang:1.21
 
-CMD ["/app/myapp"]
+# RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o main ./cmd/main.go
+
+
+WORKDIR /app
+
+COPY --from=builder /app ./
+
+EXPOSE 8080
+
+RUN go build -o main cmd/main.go
+
+
+CMD ["/app/main"]

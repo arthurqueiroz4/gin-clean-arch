@@ -8,8 +8,6 @@ services:
     image: app
     container_name: app
     restart: unless-stopped
-    volumes:
-      - ./app:/app
     env_file: .env
     ports:
       - "8080:8080"
