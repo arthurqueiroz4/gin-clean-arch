@@ -1,5 +1,7 @@
  # Etapa de build
-FROM golang:1.21-alpine AS builder
+FROM golang:1.21-alpine AS base
+
+FROM base AS builder
 
 WORKDIR /app
 
@@ -13,7 +15,7 @@ RUN go build -o main cmd/main.go
 
 
 
-FROM builder as runner
+FROM base as runner
 
 # RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o main ./cmd/main.go
 
