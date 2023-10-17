@@ -12,7 +12,7 @@ func (uc *UserController) FindAllUsers(c *gin.Context) {
 	}
 	size := c.Query("size")
 	if size == "" {
-		size = "0"
+		size = "10"
 	}
 	allUsers, total, err := uc.UserUsecase.FindAll(page, size)
 	if err != nil {
