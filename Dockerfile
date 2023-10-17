@@ -1,5 +1,5 @@
  # Etapa de build
-FROM golang:1.21 AS builder
+FROM golang:1.21-alpine AS builder
 
 WORKDIR /app
 
@@ -9,18 +9,19 @@ RUN go mod download
 
 ADD . /app
 
-FROM golang:1.21
-
-# RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o main ./cmd/main.go
-
-
-WORKDIR /app
-
-COPY --from=builder /app ./
-
-EXPOSE 8080
-
 RUN go build -o main cmd/main.go
 
 
+
+FROM builder as runner
+
+# RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o main ./cmd/main.go
+
+WORKDIR /app
+
+COPY --from=builder /app/main ./
+
+EXPOSE 8080
+
 CMD ["/app/main"]
+
